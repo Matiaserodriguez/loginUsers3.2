@@ -1,32 +1,27 @@
 # Overview
 
-{Important! Do not say in this section that this is college assignment. Talk about what you are trying to accomplish as a software engineer to further your learning.}
+This is an app for users to register, login, and choice courses they want to take.
 
-{Provide a description of the software that you wrote to demonstrate the Kotlin language.}
+It is coded in Kotlin, and is in continuous development
 
-{Describe your purpose for writing this software.}
-
-{Provide a link to your YouTube demonstration. It should be a 4-5 minute demo of the software running and a walkthrough of the code. Focus should be on sharing what you learned about the language syntax.}
+I want to help a music school that is having setbacks when enrolling students in the school of music.
 
 [Software Demo Video](http://youtube.link.goes.here)
 
 # Development Environment
 
-{Describe the tools that you used to develop the software}
+Languages:
+- Kotlin
 
-{Describe the programming language that you used and any libraries.}
+IDE: 
+- Android Studio
 
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
-
-- [Web Site Name](http://url.link.goes.here)
-- [Web Site Name](http://url.link.goes.here)
+- [Kotlin Official Docs](https://kotlinlang.org/docs/getting-started.html)
 
 # Future Work
 
-{Make a list of things that you need to fix, improve, and add in the future.}
-
-- Item 1
-- Item 2
-- Item 3
+- Add more description to items
+- Add a cloud database
+- Having an external API for payment, as Stripe or MercadoPago
