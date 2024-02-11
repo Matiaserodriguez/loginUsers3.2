@@ -1,11 +1,19 @@
 package com.example.userlogin
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+
+val Context.dataStore by preferencesDataStore(name = "DB_USER")
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -13,6 +21,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     lateinit var btnSignUp : Button
     lateinit var username : EditText
     lateinit var password : EditText
+    companion object {
+        lateinit var dataStoreClass: DataStorePreferences
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +36,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         btnLogin.setOnClickListener(this)
         btnSignUp.setOnClickListener(this)
+
+        dataStoreClass = DataStorePreferences(this)
+
+        // loads data from preferences into in memoryDB
+        lifecycleScope.launch(Dispatchers.IO) {
+            dataStoreClass.getDB().collect() {dataBase ->
+                db = dataStoreClass.convertJSONtoDB(dataBase)
+        }
+        }
     }
 
     override fun onClick(v: View?) {

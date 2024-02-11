@@ -2,7 +2,7 @@
 
 This is an app for users to register, login, and choice courses they want to take.
 
-It is coded in Kotlin, and is in continuous development
+It is coded in Kotlin and uses a local storage to store logins, and is in continuous development
 
 I want to help a music school that is having setbacks when enrolling students in the school of music.
 
