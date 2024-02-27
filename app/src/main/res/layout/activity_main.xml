@@ -38,6 +38,15 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:text="Sign Up" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/google_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="Sign in with Google"
+            app:icon="@drawable/googlelogo"
+            android:backgroundTint="@color/black"/>
+
     </LinearLayout>
 
 </LinearLayout>

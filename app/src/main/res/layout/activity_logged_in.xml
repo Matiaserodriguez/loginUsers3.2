@@ -20,27 +20,38 @@
     <ListView
         android:id="@+id/list_courses"
         android:layout_width="match_parent"
-        android:layout_height="620dp"
+        android:layout_height="455dp"
         android:choiceMode="multipleChoice" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:layout_height="386dp"
+        android:background="@android:color/darker_gray"
+        android:orientation="vertical">
 
         <Button
-            android:id="@+id/btn_sign_out"
-            android:layout_width="160dp"
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:text="👈 Sign out" />
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:text="Save" />
 
         <Button
             android:id="@+id/btn_payment"
-            android:layout_width="160dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
+            android:backgroundTint="@android:color/holo_green_dark"
             android:text="Payment 👉" />
+
+        <Button
+            android:id="@+id/btn_sign_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:text="👈 Sign out" />
+
     </LinearLayout>
 </LinearLayout>

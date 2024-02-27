@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">UserLogin</string>
+    <string name="default_web_client_id">539953591475-359qme51b4bl8igq3eh0h03tes3ruhne.apps.googleusercontent.com</string>
     <string name="done" />
 </resources>
