@@ -20,13 +20,12 @@
     <ListView
         android:id="@+id/list_courses"
         android:layout_width="match_parent"
-        android:layout_height="455dp"
+        android:layout_height="365dp"
         android:choiceMode="multipleChoice" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="386dp"
-        android:background="@android:color/darker_gray"
         android:orientation="vertical">
 
         <Button
@@ -52,6 +51,15 @@
             android:layout_margin="20dp"
             android:backgroundTint="@android:color/holo_red_dark"
             android:text="👈 Sign out" />
+
+        <Button
+            android:id="@+id/btn_delete_acc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:backgroundTint="@android:color/holo_red_light"
+            android:text="Delete Account" />
+
 
     </LinearLayout>
 </LinearLayout>

@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 if (usr != null) {
                     if (usr.password == pass.toString()) {
                         val intent = Intent(this, LoggedIn::class.java)
+                        intent.putExtra("USERNAME", usr.username)
                         startActivity(intent)
                     }
                 } else {
@@ -95,7 +96,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 startActivity(intent)
             }
             R.id.google_btn -> {
-                println("Llegamo al boton")
                 val signInIntent = googleSignInClient.signInIntent
                 launcher.launch(signInIntent)
             }
@@ -104,8 +104,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         result ->
-        println("Llegamo al ANTES del RUN DEL LAUNCHER")
-            println("Llegamo al RUN DEL LAUNCHER")
             if (result.resultCode == Activity.RESULT_OK) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 handleResults(task)
@@ -113,7 +111,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun handleResults(task : Task<GoogleSignInAccount>) {
-        println("Llegamo al handleResults")
         if (task.isSuccessful) {
             val account : GoogleSignInAccount? = task.result
             if (account != null) {
@@ -125,7 +122,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun updateUI(account : GoogleSignInAccount) {
-        println("Llegamo al updateUI")
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         auth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
