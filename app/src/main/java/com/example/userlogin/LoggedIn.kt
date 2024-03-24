@@ -5,33 +5,33 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.view.get
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.toObject
 
 class LoggedIn : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var retrievedFromFirebase: Unit
     lateinit var listViewCourses: ListView
-    lateinit var adapter: ArrayAdapter<String>
+    lateinit var adapter: MyAdapter
     lateinit var btnSignOut : Button
     lateinit var btnPayment : Button
     lateinit var btnSave : Button
     lateinit var deleteAcc: Button
     lateinit var auth : FirebaseAuth
     lateinit var firebaseDatabase : FirebaseDatabase
-    lateinit var collection: DatabaseReference
+    lateinit var addedCoursesCollection: DatabaseReference
     lateinit var userName : String
     var arrayCourses : Course = Course()
     val db = Firebase.firestore
@@ -49,18 +49,37 @@ class LoggedIn : AppCompatActivity(), View.OnClickListener {
         userName = if (auth.currentUser?.uid != null) auth.currentUser?.uid!! else intent.getStringExtra("USERNAME") ?: ""
 
         firebaseDatabase = FirebaseDatabase.getInstance()
-        collection = firebaseDatabase.getReference("Courses")
+        addedCoursesCollection = firebaseDatabase.getReference("Courses")
+        val allCoursesCollection = db.collection("CoursesInfo")
 
+        var allCourses: ArrayList<Course> = ArrayList()
 
-        listViewCourses = findViewById(R.id.list_courses)
-        adapter = ArrayAdapter<String>(
-            this,
-            android.R.layout.simple_list_item_multiple_choice,
-            arrayCourses.courseList
-        )
-        listViewCourses.adapter = adapter
+        allCoursesCollection.get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    println("----------document----------")
+                    println(document)
+                    val course = document.toObject(Course::class.java)
+                    course.courseName = document.id
+                    println("----------course----------")
+                    println(course)
+                    allCourses.add(course)
+                }
 
-        retrievedFromFirebase = retrieveFromFirebase(listViewCourses, userName)
+                listViewCourses = findViewById(R.id.list_courses)
+                adapter = MyAdapter(this, allCourses)
+                listViewCourses.adapter = adapter
+                retrievedFromFirebase = retrieveFromFirebase(listViewCourses, userName)
+
+            }
+            .addOnFailureListener { exception ->
+                println("get failed with:")
+                println(exception)
+            }
+
+        println("---------------allCourses---------------")
+        println(allCourses)
+
         btnSignOut.setOnClickListener(this)
         btnPayment.setOnClickListener(this)
         btnSave.setOnClickListener(this)
@@ -78,15 +97,10 @@ class LoggedIn : AppCompatActivity(), View.OnClickListener {
                 val userUid = if (auth.currentUser?.uid != null) auth.currentUser?.uid else this.userName
 
                 val cursosMap = mutableListOf<Curso>()
-                for (i in 0 until adapter.count) {
-                    val item = adapter.getItem(i)
-                    val isChecked = listViewCourses.isItemChecked(i)
-                    // listViewCourses.setItemChecked(i, true)
-
-                    val objetoFirebase = Curso(item ?: "", isChecked)
+                for (course in adapter.arrayList) {
+                    val objetoFirebase = Curso(course.courseName, course.isChecked)
                     cursosMap.add(objetoFirebase)
                 }
-
                 val mapaFirebase = cursosMap.associateBy({ it.curso }, { it.isChecked })
                 println("------listaObjetosFirebase------")
                 println(mapaFirebase)
@@ -119,18 +133,22 @@ class LoggedIn : AppCompatActivity(), View.OnClickListener {
     ) {
         val theCollection = db.collection("Courses").document(userUid)
         theCollection.get()
-            .addOnSuccessListener {document ->
+            .addOnSuccessListener { document ->
                 if (document.exists()) {
                     println("DocumentSnapshot data: ${document.data}")
                     val coursesMap = document.data
 
-                    for (i in 0 until adapter.count) {
-                        val course = adapter.getItem(i)
-                        val isChecked = document.getBoolean(course.toString())
+                    if (coursesMap != null) {
+                        for (entry in coursesMap) {
+                            val courseName = entry.key
+                            val isChecked = entry.value as? Boolean
 
-                        if (isChecked != null) {
-                            listViewCourses.setItemChecked(i, isChecked)
+                            if (isChecked != null) {
+                                val course = (listViewCourses.adapter as MyAdapter).arrayList.find { it.courseName == courseName }
+                                course?.isChecked = isChecked
+                            }
                         }
+                        adapter.notifyDataSetChanged()
                     }
 
                     println(coursesMap)
@@ -146,7 +164,7 @@ class LoggedIn : AppCompatActivity(), View.OnClickListener {
 
     private fun createOrUpdate(
         userUid: String?,
-        coursesMap: Map<String, Boolean>
+        coursesMap: Map<Comparable<Nothing>, Boolean>
     ) {
         db.collection("Courses").document(userUid ?: "default").set(coursesMap)
             .addOnSuccessListener {
@@ -173,6 +191,6 @@ class LoggedIn : AppCompatActivity(), View.OnClickListener {
 }
 
 data class Curso(
-    val curso: String,
+    val curso: Comparable<*>,
     val isChecked: Boolean
 )
